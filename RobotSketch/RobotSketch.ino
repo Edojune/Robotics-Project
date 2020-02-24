@@ -25,13 +25,14 @@ void setup()
 void loop()
 {
     //
-    int IR_SENSOR1 = analogRead(A0);
+    //int IR_SENSOR1 = analogRead(A0);
     //int IR_SENSOR2 = analogRead(A1);
-    Serial.println(IR_SENSOR1);
+    //Serial.println(IR_SENSOR1);
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, HIGH);
     delay(25);
     analogWrite(EN_A, motor_speed1);
+    Serial.println(EN_A);
     //delay(3000);
     //analogWrite(EN_A, 0);
     delay(3000);

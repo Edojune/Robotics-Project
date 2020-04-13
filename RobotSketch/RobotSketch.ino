@@ -10,7 +10,11 @@ int EN_B = 5;  // Enable pin for second motor
 int motor_speed1 = 200;
 int motor_speed2 = 0;
 
-// IR_PIN_1
+int IR_PIN_1 = A0;
+int IR_PIN_2 = A1;
+
+int sensor1Val = 0;
+int sensor2Val = 0;
 
 void moveForward()
 {
@@ -80,10 +84,31 @@ void setup()
 void loop()
 {
     //
-    //int IR_SENSOR1 = analogRead(A0);
+    sensor1Val = analogRead(IR_PIN_1);
+    sensor2Val = analogRead(IR_PIN_2);
     //int IR_SENSOR2 = analogRead(A1);
-    //Serial.println(IR_SENSOR1);
-    moveForward();
-    moveForward();
-    moveBackward();
+    Serial.println(sensor1Val);
+    Serial.println(sensor2Val);
+    if (sensor1Val > 0 && sensor2Val > 0)
+    {
+        moveForward();
+    }
+    else if (sensor1Val > 0 && sensor2Val == 0)
+    {
+        moveRight();
+    }
+    else if (sensor1Val == 0 && sensor2Val > 0)
+    {
+        moveLeft();
+    }
+    else
+    {
+        stop();
+        moveLeft();
+        moveLeft();
+    }
+
+    // moveForward();
+    // moveForward();
+    // moveBackward();
 }

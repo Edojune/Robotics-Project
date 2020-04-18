@@ -7,11 +7,14 @@ int IN4 = 6;   // Control pin for second motor
 int EN_B = 5;  // Enable pin for second motor
 
 // Variables for motors
-int motor_speed1 = 200;
+int motor_speed1 = 235;
+;
 int motor_speed2 = 0;
 
 int IR_PIN_1 = A0;
 int IR_PIN_2 = A1;
+
+const int LED = 13;
 
 int sensor1Val = 0;
 int sensor2Val = 0;
@@ -60,7 +63,7 @@ void moveLeft()
     Serial.println("Left");
 }
 
-void stop()
+void stopMovement()
 {
     digitalWrite(EN_A, LOW);
     digitalWrite(EN_B, LOW);
@@ -79,6 +82,10 @@ void setup()
     pinMode(IN3, OUTPUT);
     pinMode(IN4, OUTPUT);
     pinMode(EN_B, OUTPUT);
+    // Initializing infrared sensor pins
+    pinMode(IR_PIN_1, INPUT);
+    pinMode(IR_PIN_2, INPUT);
+    pinMode(LED, OUTPUT);
 }
 
 void loop()
@@ -89,23 +96,27 @@ void loop()
     //int IR_SENSOR2 = analogRead(A1);
     Serial.println(sensor1Val);
     Serial.println(sensor2Val);
-    if (sensor1Val > 0 && sensor2Val > 0)
+    if  (digitalRead(IR_PIN_1) == HIGH && digitalRead(IR_PIN_2) == HIGH)
     {
+        digitalWrite(LED, HIGH);
         moveForward();
     }
-    else if (sensor1Val > 0 && sensor2Val == 0)
+    else if (digitalRead(IR_PIN_1) == LOW && digitalRead(IR_PIN_2) == HIGH)
     {
+        digitalWrite(LED, HIGH);
         moveRight();
     }
-    else if (sensor1Val == 0 && sensor2Val > 0)
+    else if (digitalRead(IR_PIN_1) == HIGH && digitalRead(IR_PIN_2) == LOW)
     {
+        digitalWrite(LED, HIGH);
         moveLeft();
     }
     else
     {
-        stop();
-        moveLeft();
-        moveLeft();
+        digitalWrite(LED, LOW);
+        stopMovement();
+//        moveLeft();
+//        moveLeft();
     }
 
     // moveForward();

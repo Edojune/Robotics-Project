@@ -1,3 +1,7 @@
+#include <SharpIR.h>
+
+#define model 1080
+
 // H-Bridge Pins
 int EN_A = 10; // Enable pin for first motor
 int IN1 = 9;   // Control pin for first motor(for direction)
@@ -7,8 +11,8 @@ int IN4 = 6;   // Control pin for second motor
 int EN_B = 5;  // Enable pin for second motor
 
 // Variables for motors
-int motor_speed1 = 235;
-;
+// Motors WILL NOT respond to speeds higher than 235!
+int motor_speed1 = 200;
 int motor_speed2 = 0;
 
 int IR_PIN_1 = A0;
@@ -18,6 +22,14 @@ const int LED = 13;
 
 int sensor1Val = 0;
 int sensor2Val = 0;
+
+int sensor1Dig = 0;
+int sensor2Dig = 0;
+
+int distance1 = 0;
+int distance2 = 0;
+
+int MIN_DISTANCE = 15;
 
 void moveForward()
 {
@@ -72,6 +84,9 @@ void stopMovement()
 
 // TODO calculate distance with ir sensors
 
+SharpIR sensor1 = SharpIR(IR_PIN_1, model);
+SharpIR sensor2 = SharpIR(IR_PIN_2, model);
+
 void setup()
 {
     Serial.begin(9600); //Starting the serial communication at 9600 baud rate
@@ -90,35 +105,46 @@ void setup()
 
 void loop()
 {
-    //
-    sensor1Val = analogRead(IR_PIN_1);
-    sensor2Val = analogRead(IR_PIN_2);
-    //int IR_SENSOR2 = analogRead(A1);
-    Serial.println(sensor1Val);
-    Serial.println(sensor2Val);
-    if  (digitalRead(IR_PIN_1) == HIGH && digitalRead(IR_PIN_2) == HIGH)
+    // Debug messages.
+    // delay(100);
+    // sensor1Dig = digitalRead(IR_PIN_1);
+    // sensor2Dig = digitalRead(IR_PIN_2);
+    distance1 = sensor1.distance();
+    distance2 = sensor2.distance();
+    Serial.println("digital for s1: ");
+    Serial.println(distance1);
+    Serial.println("digital for s2: ");
+    Serial.println(distance2);
+    if (distance1 <= MIN_DISTANCE && distance2 <= MIN_DISTANCE)
+    // (sensor1Val < 100 && sensor2Val < 100))
     {
         digitalWrite(LED, HIGH);
         moveForward();
     }
-    else if (digitalRead(IR_PIN_1) == LOW && digitalRead(IR_PIN_2) == HIGH)
-    {
-        digitalWrite(LED, HIGH);
-        moveRight();
-    }
-    else if (digitalRead(IR_PIN_1) == HIGH && digitalRead(IR_PIN_2) == LOW)
+    // Movement direction opposite of active sensor
+    else if (distance1 <= MIN_DISTANCE && distance2 > MIN_DISTANCE)
+    // || (sensor1Val < 100 && sensor2Val >= 100))
     {
         digitalWrite(LED, HIGH);
         moveLeft();
+        moveForward();
+    }
+    else if (distance1 > MIN_DISTANCE && distance2 <= MIN_DISTANCE)
+    {
+        digitalWrite(LED, HIGH);
+        moveRight();
+        moveForward();
     }
     else
     {
         digitalWrite(LED, LOW);
         stopMovement();
-//        moveLeft();
-//        moveLeft();
+        // moveLeft();
+        // moveLeft();
     }
-
+    // delay(500);
+    //    moveRight();
+    //    moveRight();
     // moveForward();
     // moveForward();
     // moveBackward();

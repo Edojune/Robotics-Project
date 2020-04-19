@@ -118,6 +118,7 @@ void loop()
     if (distance1 <= MIN_DISTANCE && distance2 <= MIN_DISTANCE)
     // (sensor1Val < 100 && sensor2Val < 100))
     {
+        delay(100);
         digitalWrite(LED, HIGH);
         moveForward();
     }
@@ -125,12 +126,14 @@ void loop()
     else if (distance1 <= MIN_DISTANCE && distance2 > MIN_DISTANCE)
     // || (sensor1Val < 100 && sensor2Val >= 100))
     {
+        delay(100);
         digitalWrite(LED, HIGH);
         moveLeft();
         moveForward();
     }
     else if (distance1 > MIN_DISTANCE && distance2 <= MIN_DISTANCE)
     {
+        delay(100);
         digitalWrite(LED, HIGH);
         moveRight();
         moveForward();

@@ -12,7 +12,7 @@ int EN_B = 5;  // Enable pin for second motor
 
 // Variables for motors
 // Motors WILL NOT respond to speeds higher than 235!
-int motor_speed1 = 200;
+int motor_speed1 = 150;
 int motor_speed2 = 0;
 
 int IR_PIN_1 = A0;
@@ -82,8 +82,6 @@ void stopMovement()
     Serial.println("Stop!");
 }
 
-// TODO calculate distance with ir sensors
-
 SharpIR sensor1 = SharpIR(IR_PIN_1, model);
 SharpIR sensor2 = SharpIR(IR_PIN_2, model);
 
@@ -106,49 +104,39 @@ void setup()
 void loop()
 {
     // Debug messages.
-    // delay(100);
-    // sensor1Dig = digitalRead(IR_PIN_1);
-    // sensor2Dig = digitalRead(IR_PIN_2);
+    sensor1Dig = digitalRead(IR_PIN_1);
+    sensor2Dig = digitalRead(IR_PIN_2);
     distance1 = sensor1.distance();
     distance2 = sensor2.distance();
     Serial.println("digital for s1: ");
     Serial.println(distance1);
     Serial.println("digital for s2: ");
     Serial.println(distance2);
-    if (distance1 <= MIN_DISTANCE && distance2 <= MIN_DISTANCE)
-    // (sensor1Val < 100 && sensor2Val < 100))
+    // if (distance1 <= MIN_DISTANCE && distance2 <= MIN_DISTANCE)
+    if (sensor1Dig == HIGH && sensor2Dig == HIGH)
     {
         delay(100);
         digitalWrite(LED, HIGH);
         moveForward();
     }
     // Movement direction opposite of active sensor
-    else if (distance1 <= MIN_DISTANCE && distance2 > MIN_DISTANCE)
-    // || (sensor1Val < 100 && sensor2Val >= 100))
+    // else if (distance1 <= MIN_DISTANCE && distance2 > MIN_DISTANCE)
+    else if (sensor1Dig == HIGH && sensor2Dig == LOW)
     {
         delay(100);
         digitalWrite(LED, HIGH);
         moveLeft();
-        moveForward();
     }
-    else if (distance1 > MIN_DISTANCE && distance2 <= MIN_DISTANCE)
+    // else if (distance1 > MIN_DISTANCE && distance2 <= MIN_DISTANCE)
+    else if (sensor1Dig == LOW && sensor2Dig == HIGH)
     {
         delay(100);
         digitalWrite(LED, HIGH);
         moveRight();
-        moveForward();
     }
     else
     {
         digitalWrite(LED, LOW);
         stopMovement();
-        // moveLeft();
-        // moveLeft();
     }
-    // delay(500);
-    //    moveRight();
-    //    moveRight();
-    // moveForward();
-    // moveForward();
-    // moveBackward();
 }
